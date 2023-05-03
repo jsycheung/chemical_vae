@@ -342,7 +342,7 @@ class TerminalGRU(GRU):
             # this should correspond  to true input
             prev_sampled_output = true_input
 
-            if self.implementation == 0:
+            if self.implementation == 1:
                 x_z = prev_layer_input[0, :, :self._units]
                 x_r = prev_layer_input[0, :, self._units: 2 * self._units]
                 x_h = prev_layer_input[0, :, 2 * self._units:]
