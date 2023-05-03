@@ -348,7 +348,7 @@ class TerminalGRU(GRU):
                 x_h = prev_layer_input[0, :, 2 * self._units:]
             else:
                 raise ValueError('Implementation type ' +
-                                 self.implementation + ' is invalid')
+                                 str(self.implementation) + ' is invalid')  # convert self.implementation to string
 
             z = self.recurrent_activation(x_z + K.dot(h_tm1 * rec_dp_mask[0],
                                                       self.recurrent_kernel_z))
