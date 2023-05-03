@@ -7,7 +7,7 @@ from keras.layers import BatchNormalization
 from keras.models import load_model
 from keras import backend as K
 from keras.models import Model
-from keras.layers.merge import Concatenate
+from keras.layers import Concatenate  # delete .merge after keras.layers
 from .tgru_k2_gpu import TerminalGRU
 
 
