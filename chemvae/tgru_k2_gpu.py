@@ -88,7 +88,7 @@ class TerminalGRU(GRU):
         self.rnd_seed = rnd_seed
         self.uses_learning_phase = True
         self.supports_masking = False
-        self.recurrent_dropout = min(1., max(0., recurrent_dropout))
+        self._recurrent_dropout = min(1., max(0., recurrent_dropout))
         self.input_spec = [InputSpec(ndim=3),
                            InputSpec(ndim=3)]
 
@@ -173,12 +173,12 @@ class TerminalGRU(GRU):
 
     def get_constants(self, inputs, training=None):
         constants = []
-        if 0. < self.recurrent_dropout < 1.:
+        if 0. < self._recurrent_dropout < 1.:
             ones = K.ones_like(K.reshape(inputs[:, 0, 0], (-1, 1)))
             ones = K.tile(ones, (1, self._units))
 
             def dropped_inputs():
-                return K.dropout(ones, self.recurrent_dropout)
+                return K.dropout(ones, self._recurrent_dropout)
 
             rec_dp_mask = [K.in_train_phase(dropped_inputs,
                                             ones,
@@ -320,7 +320,7 @@ class TerminalGRU(GRU):
         initial_states = states['initial_states']
         random_cutoff_vec = states['random_cutoff_prob']
 
-        if self.recurrent_dropout > 0:
+        if self._recurrent_dropout > 0:
             rec_dp_mask = states['rec_dp_mask']
         else:
             rec_dp_mask = np.array([1., 1., 1., 1.], dtype='float32')
