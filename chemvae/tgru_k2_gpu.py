@@ -117,14 +117,14 @@ class TerminalGRU(GRU):
         # this last recurrent weight applied to true sequence input from prev. timestep,
         #   or sampled output from prev. time step.
         self.recurrent_kernel = self.add_weight(
-            (self._units, self._units * 4),
+            shape=(self._units, self._units * 4),
             name='recurrent_kernel',
             initializer=self.recurrent_initializer,
             regularizer=self.recurrent_regularizer,
             constraint=self.recurrent_constraint)
 
         if self.use_bias:
-            self.bias = self.add_weight((self._units * 4,),
+            self.bias = self.add_weight(shape=(self._units * 4,),
                                         name='bias',
                                         initializer='zero',
                                         regularizer=self.bias_regularizer,
