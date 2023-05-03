@@ -203,7 +203,8 @@ class TerminalGRU(GRU):
         # preprocessing makes input into right form for gpu/cpu settings
         # from original GRU code
         recurrent_dropout_constants = self.get_constants(X)[0]
-        preprocessed_input = self.preprocess_input(X)
+        # preprocessed_input = self.preprocess_input(X) Jasmine: cannot find preprocess_input method from the original GRU code anymore, old version tf?
+        preprocessed_input = X
 
         #################
         # Section for index matching of true inputs
