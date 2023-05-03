@@ -61,7 +61,7 @@ self.implementation ==1 : mem
 self.implementation ==0 : cpu
 
 '''
-from keras.layers.recurrent import GRU
+from keras.layers import GRU  # delete .recurrent
 from keras import backend as K
 from keras.engine import InputSpec
 import numpy as np
@@ -137,10 +137,11 @@ class TerminalGRU(GRU):
         self.recurrent_kernel_z = self.recurrent_kernel[:, :self.units]
         self.kernel_r = self.kernel[:, self.units: self.units * 2]
         self.recurrent_kernel_r = self.recurrent_kernel[:,
-                                  self.units:
-                                  self.units * 2]
+                                                        self.units:
+                                                        self.units * 2]
         self.kernel_h = self.kernel[:, self.units * 2:]
-        self.recurrent_kernel_h = self.recurrent_kernel[:, self.units * 2:self.units * 3]
+        self.recurrent_kernel_h = self.recurrent_kernel[:,
+                                                        self.units * 2:self.units * 3]
         self.recurrent_kernel_y = self.recurrent_kernel[:, self.units * 3:]
 
         if self.use_bias:
@@ -162,7 +163,8 @@ class TerminalGRU(GRU):
         reducer = reducer / K.exp(reducer)
 
         initial_state = K.dot(initial_state, reducer)  # (samples, output_dim)
-        initial_states = [K.stack([initial_state, initial_state]) for _ in range(len(self.states))]
+        initial_states = [K.stack([initial_state, initial_state])
+                          for _ in range(len(self.states))]
         return initial_states
 
     def compute_mask(self, input, mask):
@@ -205,7 +207,7 @@ class TerminalGRU(GRU):
         preprocessed_input = self.preprocess_input(X)
 
         #################
-        ## Section for index matching of true inputs
+        # Section for index matching of true inputs
         #################
         #  Basically, we need to add an extra timestep of just 0s for predicting the first timestep output
 
@@ -215,10 +217,11 @@ class TerminalGRU(GRU):
         zeros = K.zeros_like(true_seq[:1, :, :])
 
         # add a column of zeros, remove last element
-        true_seq = K.concatenate([zeros, true_seq[:K.int_shape(true_seq)[0] - 1, :, :]], axis=0)
+        true_seq = K.concatenate(
+            [zeros, true_seq[:K.int_shape(true_seq)[0] - 1, :, :]], axis=0)
         shifted_raw_inputs = K.permute_dimensions(true_seq, axes)
 
-        ## concatenate to have same dimension as preprocessed inputs 3xoutput_dim
+        # concatenate to have same dimension as preprocessed inputs 3xoutput_dim
         # only for self.implementation = 0?
         shifted_raw_inputs = K.concatenate([shifted_raw_inputs,
                                             shifted_raw_inputs,
@@ -232,7 +235,8 @@ class TerminalGRU(GRU):
         # If not using true sequence, want to feed in a tensor of zeros instead.
         zeros_input_seq = K.zeros_like(preprocessed_input)
         test_phase_all_inputs = K.stack([preprocessed_input, zeros_input_seq])
-        test_phase_all_inputs = K.permute_dimensions(test_phase_all_inputs, axes)
+        test_phase_all_inputs = K.permute_dimensions(
+            test_phase_all_inputs, axes)
 
         all_inputs = K.in_train_phase(all_inputs, test_phase_all_inputs)
 
@@ -274,9 +278,11 @@ class TerminalGRU(GRU):
         # Creates a cdf vector and compares against a randomly generated vector
         # Requires a pre-generated rand_matrix (i.e. generated outside step function)
 
-        sampled_output = output / K.sum(output, axis=-1, keepdims=True)  # (batch_size, self.units)
+        # (batch_size, self.units)
+        sampled_output = output / K.sum(output, axis=-1, keepdims=True)
         mod_sampled_output = sampled_output / K.exp(self.temperature)
-        norm_exp_sampled_output = mod_sampled_output / K.sum(mod_sampled_output, axis=-1, keepdims=True)
+        norm_exp_sampled_output = mod_sampled_output / \
+            K.sum(mod_sampled_output, axis=-1, keepdims=True)
 
         cdf_vector = K.cumsum(norm_exp_sampled_output, axis=-1)
         cdf_minus_vector = cdf_vector - norm_exp_sampled_output
@@ -284,8 +290,10 @@ class TerminalGRU(GRU):
         rand_matrix = K.stack([rand_matrix], axis=0)
         rand_matrix = K.stack([rand_matrix], axis=2)
 
-        compared_greater_output = K.cast(K.greater(cdf_vector, rand_matrix), dtype='float32')
-        compared_lesser_output = K.cast(K.less(cdf_minus_vector, rand_matrix), dtype='float32')
+        compared_greater_output = K.cast(
+            K.greater(cdf_vector, rand_matrix), dtype='float32')
+        compared_lesser_output = K.cast(
+            K.less(cdf_minus_vector, rand_matrix), dtype='float32')
 
         final_output = compared_greater_output * compared_lesser_output
         return final_output
@@ -337,7 +345,8 @@ class TerminalGRU(GRU):
                 x_r = prev_layer_input[0, :, self.units: 2 * self.units]
                 x_h = prev_layer_input[0, :, 2 * self.units:]
             else:
-                raise ValueError('Implementation type ' + self.implementation + ' is invalid')
+                raise ValueError('Implementation type ' +
+                                 self.implementation + ' is invalid')
 
             z = self.recurrent_activation(x_z + K.dot(h_tm1 * rec_dp_mask[0],
                                                       self.recurrent_kernel_z))
