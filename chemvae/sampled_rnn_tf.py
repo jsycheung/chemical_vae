@@ -128,7 +128,7 @@ def sampled_rnn(step_function, inputs, initial_states, units, random_seed,
             Tuple: `(time + 1,output_ta_t) + tuple(new_states)`
         """
         current_input = input_ta.read(time)
-        random_cutoff_prob = tf.random_uniform(
+        random_cutoff_prob = tf.random.uniform(
             (num_samples,), minval=0, maxval=1)
 
         output, new_states = step_function(current_input,
