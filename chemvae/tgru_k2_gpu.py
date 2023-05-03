@@ -107,7 +107,7 @@ class TerminalGRU(GRU):
         if self.stateful:
             self.reset_states()
 
-        self.kernel = self.add_weight((self.input_dim, self._units * 3),
+        self.kernel = self.add_weight(shape=(self.input_dim, self._units * 3),
                                       name='kernel',
                                       initializer=self.kernel_initializer,
                                       regularizer=self.kernel_regularizer,
