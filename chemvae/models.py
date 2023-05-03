@@ -1,7 +1,7 @@
 from keras.layers import Input, Lambda
 from keras.layers.core import Dense, Flatten, RepeatVector, Dropout
 from keras.layers.convolutional import Convolution1D
-from keras.layers.recurrent import GRU
+from keras.layers import GRU # delete .recurrent after keras.layers
 from keras.layers.normalization import BatchNormalization
 from keras.models import load_model
 from keras import backend as K
