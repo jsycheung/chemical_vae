@@ -204,7 +204,6 @@ class TerminalGRU(GRU):
         # from original GRU code
         recurrent_dropout_constants = self.get_constants(X)[0]
         # preprocessed_input = self.preprocess_input(X) Jasmine: cannot find preprocess_input method from the original GRU code anymore, old version tf?
-        preprocessed_input = X
 
         #################
         # Section for index matching of true inputs
@@ -226,6 +225,9 @@ class TerminalGRU(GRU):
         shifted_raw_inputs = K.concatenate([shifted_raw_inputs,
                                             shifted_raw_inputs,
                                             shifted_raw_inputs], axis=2)
+
+        preprocessed_input = K.reshape(
+            X, [-1, shifted_raw_inputs.shape[1], shifted_raw_inputs.shape[2]])
 
         all_inputs = K.stack([preprocessed_input, shifted_raw_inputs])
         num_dim = K.ndim(all_inputs)
