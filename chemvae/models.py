@@ -1,8 +1,9 @@
 from keras.layers import Input, Lambda
 from keras.layers.core import Dense, Flatten, RepeatVector, Dropout
 from keras.layers.convolutional import Convolution1D
-from keras.layers import GRU # delete .recurrent after keras.layers
-from keras.layers.normalization import BatchNormalization
+from keras.layers import GRU  # delete .recurrent after keras.layers
+# delete .normalization after keras.layers
+from keras.layers import BatchNormalization
 from keras.models import load_model
 from keras import backend as K
 from keras.models import Model
@@ -49,7 +50,8 @@ def encoder_model(params):
         if params['dropout_rate_mid'] > 0:
             middle = Dropout(params['dropout_rate_mid'])(middle)
         if params['batchnorm_mid']:
-            middle = BatchNormalization(axis=-1, name='encoder_dense0_norm')(middle)
+            middle = BatchNormalization(
+                axis=-1, name='encoder_dense0_norm')(middle)
 
         for i in range(2, params['middle_layer'] + 1):
             middle = Dense(int(params['hidden_dim'] *
@@ -169,9 +171,9 @@ def load_decoder(params):
         return load_model(params['decoder_weights_file'])
 
 
-##====================
-## Middle part (var)
-##====================
+# ====================
+# Middle part (var)
+# ====================
 
 def variational_layers(z_mean, enc, kl_loss_var, params):
     # @inp mean : mean generated from encoder
@@ -187,7 +189,6 @@ def variational_layers(z_mean, enc, kl_loss_var, params):
 
         z_rand = z_mean + K.exp(z_log_var / 2) * kl_loss_var * epsilon
         return K.in_train_phase(z_rand, z_mean)
-
 
     # variational encoding
     z_log_var_layer = Dense(params['hidden_dim'], name='z_log_var_sample')
@@ -210,7 +211,8 @@ def variational_layers(z_mean, enc, kl_loss_var, params):
 
 def property_predictor_model(params):
     if ('reg_prop_tasks' not in params) and ('logit_prop_tasks' not in params):
-        raise ValueError('You must specify either regression tasks and/or logistic tasks for property prediction')
+        raise ValueError(
+            'You must specify either regression tasks and/or logistic tasks for property prediction')
 
     ls_in = Input(shape=(params['hidden_dim'],), name='prop_pred_input')
 
