@@ -61,7 +61,7 @@ def sampled_rnn(step_function, inputs, initial_states, units, random_seed,
     import numpy as np
     np.random.seed(random_seed)
     import tensorflow as tf
-    tf.set_random_seed(random_seed)
+    tf.random.set_seed(random_seed)  # set_random_seed deprecated
     from tensorflow.python.ops import tensor_array_ops
     from tensorflow.python.ops import control_flow_ops
     from tensorflow.python.framework import constant_op
