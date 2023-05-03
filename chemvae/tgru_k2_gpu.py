@@ -376,7 +376,7 @@ class TerminalGRU(GRU):
 
             prev_layer_input = h[0:1, :, :]
 
-            if self.implementation == 0:
+            if self.implementation == 1:  # changed to 1
                 x_z = prev_layer_input[0, :, :self._units]
                 x_r = prev_layer_input[0, :, self._units: 2 * self._units]
                 x_h = prev_layer_input[0, :, 2 * self._units:]
