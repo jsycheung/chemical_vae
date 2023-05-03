@@ -61,9 +61,9 @@ self.implementation ==1 : mem
 self.implementation ==0 : cpu
 
 '''
-from keras.layers import GRU  # delete .recurrent
+from keras.layers import GRU  # deleted .recurrent
 from keras import backend as K
-from keras.engine import InputSpec
+from keras.layers import InputSpec  # changed .engine to .layers
 import numpy as np
 
 if K.backend() == 'tensorflow':
